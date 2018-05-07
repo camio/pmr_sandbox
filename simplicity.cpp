@@ -417,15 +417,15 @@ public:
     if (allocator == other.get_allocator())
       std::swap(d_bar, other.d_bar);
     else {
-        std::pmr::polymorphic_allocator<Bar9> barAlloc{allocator};
-        d_bar = barAlloc.allocate(1);
-        try {
-          barAlloc.construct(d_bar, allocator);
-        } catch (...) {
-          barAlloc.deallocate(d_bar, 1);
-          throw;
-        }
-        *d_bar = *other.d_bar;
+      std::pmr::polymorphic_allocator<Bar9> barAlloc{allocator};
+      d_bar = barAlloc.allocate(1);
+      try {
+        barAlloc.construct(d_bar, allocator);
+      } catch (...) {
+        barAlloc.deallocate(d_bar, 1);
+        throw;
+      }
+      *d_bar = *other.d_bar;
     }
   };
 
@@ -435,8 +435,7 @@ public:
     return d_bar->get_allocator();
   }
 
-  ~Foo9()
-  {
+  ~Foo9() {
     if (d_bar) {
       std::pmr::polymorphic_allocator<Bar9> barAlloc = get_allocator();
       barAlloc.destroy(d_bar);
@@ -538,12 +537,14 @@ int main() {
   foo9s.emplace_back();
   foo9s.emplace_back();
 
-  //    std::cout << "\n## Tuple test" << std::endl;
-  //    std::tuple<std::pmr::vector<int>, std::pmr::string> t{std::allocator_arg, &memoryResource, {1}, "" };
-  //
-  //    // Does std::vector recognize std::tuple as allocator aware? Yes.
-  //    std::cout << "\n## Vector<tuple> test" << std::endl;
-  //    std::pmr::vector<std::tuple<std::pmr::vector<char>, std::pmr::string>> vt(&memoryResource);
-  //    vt.resize(1);
-  //    std::get<0>(vt[0]).resize(100);
+  std::cout << "\n## Tuple test" << std::endl;
+  std::tuple<std::pmr::vector<int>, std::pmr::string> t{
+      std::allocator_arg, &memoryResource, {1}, ""};
+
+  // Does std::vector recognize std::tuple as allocator aware? Yes.
+  std::cout << "\n## Vector<tuple> test" << std::endl;
+  std::pmr::vector<std::tuple<std::pmr::vector<char>, std::pmr::string>> vt(
+      &memoryResource);
+  vt.resize(1);
+  std::get<0>(vt[0]).resize(100);
 }
