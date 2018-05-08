@@ -216,7 +216,15 @@ public:
     if (get_allocator() == other.get_allocator())
       d_bar.reset(other.d_bar.release());
     else {
-      *this = std::move(Foo6(allocator));
+        std::pmr::polymorphic_allocator<Bar6> barAlloc{allocator};
+        Bar6 *const bar = barAlloc.allocate(1);
+        try {
+          barAlloc.construct(bar, allocator);
+        } catch (...) {
+          barAlloc.deallocate(bar, 1);
+          throw;
+        }
+        d_bar.reset(bar);
       operator=(other);
     }
   };
