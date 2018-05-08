@@ -39,3 +39,7 @@ tested with gcc 8.1.0 with libstdc++ and clang 6.0.0 with libc++ 6.0.0.
 If you'd like to experiment with the `std::pmr::monotonic_buffer_resource` that
 is built off of BDE, build `https://github.com/bloomberg/bde.git` and point the
 `Makefile` to its build artifacts.
+
+Note that Boost also has an implementation of various memory resources in its
+[container
+library](https://www.boost.org/doc/libs/1_67_0/doc/html/container/polymorphic_memory_resources.html).
